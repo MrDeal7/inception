@@ -8,8 +8,8 @@ if [ ! -d /var/lib/mysql/mysql ]; then
     mysql_install_db --user=mysql --datadir=/var/lib/mysql
 fi
 
+# Start MariaDB in the background for initialization
 mysqld_safe --skip-networking &
-pid="$!"
 
 # Wait for MariaDB to be ready for connections
 for i in {1..30}; do
@@ -20,6 +20,7 @@ for i in {1..30}; do
     sleep 1
 done
 
+# Run initialization SQL
 mysql -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\`;"
 mysql -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';"
 mysql -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "GRANT ALL PRIVILEGES ON \`${MYSQL_DATABASE}\`.* TO '${MYSQL_USER}'@'%';"
@@ -27,7 +28,8 @@ mysql -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "ALTER USER 'root'@'localhost' IDENTI
 mysql -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "FLUSH PRIVILEGES;"
 echo "all steps done"
 
-kill "$pid"
-wait "$pid"
+# Stop the background MariaDB process
+mysqladmin -uroot -p"${MYSQL_ROOT_PASSWORD}" shutdown
 
-exec mysqld_safe
+# Start MariaDB in the foreground (only once!)
+exec mysqld_safe --bind-address=0.0.0.0

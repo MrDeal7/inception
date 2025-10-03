@@ -13,7 +13,7 @@ RUN mkdir -p /var/lib/mysql \
 
 EXPOSE 3306
 
-COPY ./conf/mysql.conf /etc/mysql/mariadb.conf.d/50-custom.cnf
+COPY ./conf/mysql.conf /etc/mysql/mariadb.conf.d/50-server.cnf
 COPY ./tools/mariadb.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/mariadb.sh
 
