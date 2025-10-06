@@ -33,3 +33,4 @@ mysqladmin -uroot -p"${MYSQL_ROOT_PASSWORD}" shutdown
 
 # Start MariaDB in the foreground (only once!)
 exec mysqld_safe --bind-address=0.0.0.0
+

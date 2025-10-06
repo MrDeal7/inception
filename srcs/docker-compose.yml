@@ -9,6 +9,8 @@ services:
       - wordpress_data:/var/www/html
     networks:
       - network
+    depends_on:
+      - wordpress
 
   mariadb:
     restart: always
